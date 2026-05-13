@@ -1,4 +1,13 @@
 {
-  "folders": [],
+  "folders": [
+    {
+      "id": "f-34fa451b",
+      "name": "Enie-presentation",
+      "icon": {
+        "type": "color",
+        "value": "#c0392b"
+      }
+    }
+  ],
   "assignments": {}
 }
