@@ -9,5 +9,7 @@
       }
     }
   ],
-  "assignments": {}
+  "assignments": {
+    "enie-face-recognition": "f-34fa451b"
+  }
 }

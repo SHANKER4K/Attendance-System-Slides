@@ -1,0 +1,566 @@
+\PassOptionsToPackage{main=english}{babel}
+\documentclass[sommairechap,stylejchiquet]{these_gi}
+\usepackage{arabtex}
+\usepackage[utf8]{inputenc}
+\usepackage{newpxtext,newpxmath}
+\usepackage{float}  % for [H] float placement
+\usepackage{url}    % for \url{} command
+\setcode{utf8}
+\setarab
+
+\begin{document}
+
+\titleFR{Intelligent Attendance Control System using Face Recognition}
+\titleEN{Intelligent Attendance Control System using Face Recognition}
+\address{adresse email}
+\universite{Universite Djillali Liabes de Sidi Bel Abbes}
+\faculte{Faculte des Sciences Exactes}
+\department{Departement d informatique}
+\laboratoire{ }
+\anneeetud{ 4\up{th} year }
+\specialite{ State-Certified Computer Engineer }
+\parcours{ }
+\datesoutenance{ .. Juin 2026 }
+
+\annee{ 2025 - 2026 }
+\datesoumission{}
+
+\jury{\begin{tabular}{llll}
+    Ph.D Candidate  & \textsc{Makri Mohammed} & UDL SBA & (Academic Advisor)
+  \end{tabular}
+}
+
+\author{\begin{tabular}{llll}
+                M\up{r} & \textsc{ Medjahdi Ismail  } \\
+                M\up{r} & \textsc{ Ferdi Ismail  } \\
+  \end{tabular}    
+}
+
+% ==================================================================
+% DÉDICACE
+\dedicate{}
+ 
+% ==================================================================
+% DEBUT DE LA PRÉFACE
+\beforepreface
+ 
+% remerciements
+%\include{remerc}
+ 
+% table des matières générale
+\tableofcontents
+ \newpage
+% affiche la liste des figures et des tableaux
+\listoffigures
+ \newpage
+% ==================================================================
+\afterpreface
+  
+% ==================================================================
+
+\newpage
+\chapter{Introduction}
+% Acknowledgements
+\section*{Acknowledgements}
+I would like to express my gratitude to Prof. \textbf{Makri Habib} for his guidance and supervision throughout this project.
+
+\newpage
+
+% Project Summary
+\section*{Project Summary}
+
+During the internship at ENIE, attendance management was identified as a process that could benefit from automation and digitalization. To address this challenge, we developed a deep learning-based face recognition system capable of automatically identifying employees and recording attendance events.
+
+The proposed solution combines face detection using MTCNN, feature extraction using a pretrained InceptionResnetV1 backbone, ArcFace loss optimization, and an attendance logging module. To improve security and prevent presentation attacks, a face anti-spoofing module based on MiniFAS was also integrated.
+
+Experimental results demonstrated high recognition accuracy and confirmed the feasibility of deploying face recognition technologies for attendance management in industrial environments.
+
+\newpage
+
+% Keywords
+\section*{Keywords}
+\textit{Face recognition, ArcFace, Deep Learning, MTCNN, FaceNet, Embeddings, Transfer Learning, Attendance system, PyTorch, Computer Vision.}
+
+\newpage
+
+% List of Abbreviations
+\section*{List of Abbreviations}
+
+\begin{center}
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Abbreviation} & \textbf{Meaning} \\
+\hline
+\textbf{AI / IA} & Artificial Intelligence / Intelligence Artificielle \\
+\hline
+\textbf{ArcFace} & Additive Angular Margin Loss for Deep Face Recognition \\
+\hline
+\textbf{BN} & Batch Normalization \\
+\hline
+\textbf{CNN} & Convolutional Neural Network \\
+\hline
+\textbf{CPU} & Central Processing Unit \\
+\hline
+\textbf{CSV} & Comma-Separated Values \\
+\hline
+\textbf{DL} & Deep Learning \\
+\hline
+\textbf{ENIE} & Entreprise Nationale des Industries Électroniques \\
+\hline
+\textbf{FC} & Fully Connected Layer \\
+\hline
+\textbf{GPU} & Graphics Processing Unit \\
+\hline
+\textbf{IR-ResNet} & Improved Residual Network \\
+\hline
+\textbf{LFW} & Labeled Faces in the Wild (benchmark dataset) \\
+\hline
+\textbf{MTCNN} & Multi-task Cascaded Convolutional Networks \\
+\hline
+\textbf{PReLU} & Parametric Rectified Linear Unit \\
+\hline
+\textbf{PyTorch} & Deep Learning framework developed by Meta AI \\
+\hline
+\textbf{ReLU} & Rectified Linear Unit \\
+\hline
+\textbf{ResNet} & Residual Network \\
+\hline
+\textbf{SM} & Similarity Metric \\
+\hline
+\end{tabular}
+\end{center}
+
+\newpage
+
+\section{General Introduction}
+Attendance management is a very useful component to add to the company to manage employees entering and leaving. Traditional manual attendance systems such as paper based sign-in sheets or basic swipe card are prone to errors, fraud, and inefficiency.
+
+With the advancement of computer vision and deep learning, automatic attendance systems based on face recognition fixed a lot of corruptions and saved money for the companies providing:
+
+\begin{itemize}
+    \item \textbf{Non-invasive}: No physical contact or devices required
+    \item \textbf{Scalable}: Can handle large numbers of individuals
+    \item \textbf{Accurate}: When properly trained, achieves high accuracy rates
+    \item \textbf{Audit-friendly}: Creates automatic, tamper-proof records
+\end{itemize}
+
+This project explores the development of a face recognition-based attendance system using deep learning techniques, specifically implementing the ArcFace paper which has demonstrated superior performance compared to earlier approaches such as Triplet Loss.
+
+\section{Report Structure}
+This report is organized into two chapters. The first chapter outlines the problem discovered during the internship. The second chapter covers the proposed solution and presents the state of the art of face recognition technologies, as well as the methods used to improve our model.
+
+\chapter{The Problem}
+
+Part of a functional and successful workplace is ensuring that everyone fulfills the responsibilities of their role. Being on time and coming to work consistently is important regardless of your position. Understanding the basics of punctuality and attendance can help you develop respectful, professional habits for the workplace to build a productive work environment.
+
+\textbf{Attendance and punctuality} are often seen as basic workplace expectations, yet they are powerful indicators of company culture. When employees consistently show up on time and are engaged, it reflects more than strict policies. It signals motivation, accountability, and a sense of belonging.
+
+On the other hand, chronic absenteeism and lateness often point to deeper cultural issues. Improving attendance and focusing on the importance of punctuality starts with strengthening company culture, not simply enforcing rules.
+
+\section{What is the importance of punctuality and attendance?}
+Punctuality and attendance are important in the workplace because they uphold productivity. People at work rely on one another to be punctual so they can work together on projects, get feedback and submit work to clients according to their expectations. Here are some of the main reasons being punctual and attending work reliably are important:
+\begin{itemize}
+    \item \textbf{You can build a culture of trust.} When everyone on a team consistently has good punctuality and attendance, they can trust one another to help with tasks and submit their portion of a project on schedule.
+    \item \textbf{Punctual behavior improves efficiency.} By arriving on time to meetings and work commitments, everyone can start their duties right away instead of having to wait to begin.
+    \item \textbf{Companies can develop better reputations.} Being punctual and showing up to work allows you to get more work done and communicate consistently with clients, improving your relationships with customers and developing a reputation for quality, dependable work.
+\end{itemize}
+
+\section{Attendance Management Challenges}
+
+During the internship, attendance management was identified as a process that could benefit from modernization and automation.
+
+The current attendance workflow relies heavily on manual procedures and administrative supervision, which may lead to:
+
+\begin{enumerate}
+    \item Increased administrative workload.
+    \item Delays in attendance reporting.
+    \item Human errors during attendance registration.
+    \item Difficulty in maintaining centralized attendance records.
+\end{enumerate}
+
+These limitations motivated the development of an automated attendance system based on face recognition technologies.
+
+\section{Benefits of solving these problems}
+
+\textbf{Start on time}:
+When employees are coming in the exact time, we won't have the problem of waiting a specific person to come so we start, this feature will scale productivity to higher levels.
+
+\textbf{Replace pen and paper attendance}:
+To work faster, we must stop taking attendance with pen and paper every day and make a machine to do that
+
+\chapter{The Solution}
+
+\section{Solution Overview}
+We implemented a deep learning model to register employees in a local database and record daily attendance from it
+\section{System Pipeline}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{assets/pipeline diagram.png}
+    \caption{System Pipeline}
+    \label{fig:pipeline}
+\end{figure}
+
+\newpage
+
+\subsection{Face Detection and Face Alignment --- MTCNN}
+There are many tools for face detection; we used \textbf{MTCNN}, a robust face detection and alignment library implemented for \texttt{Python >= 3.10} and \texttt{TensorFlow >= 2.12}, designed to detect faces and their landmarks using a multitask cascaded convolutional network. This library improves on the original implementation by offering a complete refactor, simplifying usage, improving performance, and providing support for batch processing.
+
+This library is ideal for applications requiring face detection and alignment, with support for both bounding box and landmark prediction.\footnote{MTCNN - Multitask Cascaded Convolutional Networks for Face Detection and Alignment https://github.com/ipazc/mtcnn}
+
+\subsection{Face Anti-Spoofing --- MiniFAS}
+Once a face is detected, it undergoes a liveness validation step before further processing. We integrated \textbf{MiniFAS}, a lightweight face anti-spoofing model running via the \textbf{ONNX} runtime, to detect presentation attacks such as high-quality photographs (paper attacks) and digital screen replays (replay attacks). This module runs efficiently on CPU and adds minimal latency to the overall pipeline while ensuring that only live, physically present individuals proceed to the embedding stage.
+
+\subsection{Feature Extraction --- Face Embedding}
+After alignment, the cropped face image is passed to the backbone network --- \textbf{InceptionResNetV1} pre-trained on \textbf{VGGFace2}. The network produces a vector of 512 numbers that uniquely represents the identity of the person. This vector is called a \textbf{face embedding}.
+
+Then normalize the embedding vector with L2 normalization:
+\begin{equation}
+\hat{x} = \frac{x}{||x||}
+\end{equation}
+
+This forces all embeddings onto the surface of a unit hypersphere, meaning every vector has a magnitude of exactly 1.0.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{assets/pipeline.png}
+    \caption{Face Embedding Visualization}
+    \label{fig:embedding}
+\end{figure}
+
+\newpage
+
+\subsection{Face Recognition --- Cosine Similarity}
+Cosine similarity measures the similarity between two non-zero vectors by calculating the cosine of the angle between them. It is widely used in machine learning and data analysis, especially in text analysis, document comparison, search queries, and recommendation systems.
+
+\begin{itemize}
+    \item Similarity measure calculates the distance between data objects based on their feature dimensions in a dataset.
+    \item A smaller distance indicates a higher similarity, while a larger distance indicates a lower similarity.
+\end{itemize}
+
+The formula to find the cosine similarity between two vectors is:
+\begin{equation}
+C_{S}(x,y) = \frac{x \cdot y}{||x|| \cdot ||y||}
+\end{equation}
+
+Using this metric, we can measure how much two images differ from each other and determine whether the detected person matches an employee stored in the database.
+
+\subsection{Attendance Logging}
+This is the core step: once the employee is detected, the entry/exit log is saved in the company's database.
+
+\section{ArcFace}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{assets/arcface_viz.png} % Replace with actual image file
+    \caption{ArcFace Visualization: Additive Angular Margin Loss}
+    \label{fig:arcface}
+\end{figure}
+
+ArcFace is one of the famous deep face recognition methods nowadays. The main feature of ArcFace is applying an Additive Angular Margin Loss to enforce the intra-class(same person) compactness of embedding space and inter-class(others) discrepancy. Before ArcFace arrived, many proposed methods used the softmax loss as a classification loss in deep face recognition. However, there are some drawbacks to using only the softmax loss. One of them is that the softmax loss doesn't optimize the feature embedding to constrain higher similarity between intra-class samples and diversity for inter-class samples, which means the boundaries between people are sometimes ambiguous, and it deteriorates the model performance. So, the authors introduced an Additive Angular Margin Loss to obtain further improvement for the discriminative power of face recognition. In the next paragraph, we will go through the mathematical comparison between the softmax loss and an additive angular margin loss.
+
+\subsection{Why Not Softmax}
+The most widely used classification loss function, softmax loss, is presented as follows:
+\begin{equation}
+L_{1}= -\log\space \frac{e^{W_{y_{i}}^{T}x_i+b_{y_{i}}}}{\sum\limits_{j=1}^{N}e^{W_{j}^{T}x_i+b_{j}}}
+\end{equation}
+
+Softmax is generally effective in standard image classification (dogs, cats, cars) where classes differ from each other.
+
+While in High-Dimensional Face Problems face recognition is fundamentally different from general classification:
+
+\textbf{Face Recognition}: Identify which person is in an image among N people. But:
+\begin{itemize}
+    \item $N$ can be \textbf{millions} (national ID databases)
+    \item New faces are \textbf{constantly added} (not a fixed set of classes)
+    \item The \textbf{feature space is extremely high-dimensional} (512-2048 dimensions)
+    \item \textbf{Subtle differences} between faces matter (same person vs different person)
+\end{itemize}
+
+In face recognition problems, we need a loss function that explicitly pushes same-person embeddings together, pushes different-person embeddings apart, and ensures correct classification (ranking).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{assets/arcface_softmax_comparison.png}
+    \caption{Comparison of decision boundaries: Softmax vs ArcFace with angular margin}
+    \label{fig:arcface_softmax}
+\end{figure}
+
+\subsection{ArcFace vs Triplet Loss}
+
+\subsubsection{What is Triplet Loss?}
+Triplet Loss was introduced by FaceNet (Google, 2015) and is based on \textbf{triplets} of samples:
+
+\textbf{Triplet}:
+\begin{itemize}
+    \item \textbf{Anchor} $x_a$: A reference face image
+    \item \textbf{Positive} $x_p$: Another image of the \textbf{same person} as anchor
+    \item \textbf{Negative} $x_n$: An image of a \textbf{different person}
+\end{itemize}
+
+\textbf{Goal}
+Triplet Loss tries to make \textbf{Positive} close to the \textbf{Anchor} and push the \textbf{Negative} away.
+\begin{equation}
+d(\text{same person}) + \alpha < d(\text{different person})
+\end{equation}
+
+\textbf{In words}:
+\begin{itemize}
+    \item Distance between same person's faces < distance between different people
+    \item With a margin of $\alpha$ for robustness
+\end{itemize}
+
+\subsubsection{Triplet Loss Limitations}
+\begin{enumerate}
+    \item \textbf{Local Comparisons}: Triplet loss comparing only the images within the mini-batch and know nothing about the others
+    \item \textbf{Increased Iteration Steps}: Making lot of triplets makes the training slower and also gives us heavy forward pass and backpropagation especially in big databases
+    \item \textbf{Margin Tuning}: The choice of margin (the threshold that defines the minimum acceptable distance between anchor-positive and anchor-negative pairs) is crucial in triplet loss. Tuning this margin parameter can be non-trivial and may require careful experimentation to achieve optimal performance.
+\end{enumerate}
+
+\subsubsection{Advantages of ArcFace:}
+\begin{enumerate}
+    \item \textbf{Stable Training Process}: ArcFace provides a more stable training process compared to previous methods. This stability is achieved by directly optimizing the geodesic distance margin, which results in smoother optimization and convergence during training. Unlike some previous methods that relied on approximations or heuristic techniques, ArcFace's optimization process is more consistent and reliable.
+\end{enumerate}
+
+\section{Proposed System}
+
+\subsection{System Overview}
+The proposed attendance system follows the following workflow:
+
+\textbf{Register Employees}:
+Camera $\rightarrow$ Face Detection $\rightarrow$ Face Embedding $\rightarrow$ Normalization $\rightarrow$ Database
+
+\textbf{Attendance}:
+Camera $\rightarrow$ Face Detection $\rightarrow$ Face Anti-Spoofing $\rightarrow$ Face Embedding $\rightarrow$ Recognition $\rightarrow$ Attendance Logging
+
+\subsection{Dataset Description}
+The \href{https://www.kaggle.com/datasets/jessicali9530/lfw-dataset}{Labelled Faces in the Wild (LFW) Dataset} was used for training. From the original 13k+ face images, we selected identities with at least four images to enable proper train/validation splitting, resulting in a subset of 500 images across 10 identities. This dataset size was sufficient for fine-tuning the later backbone layers and training the ArcFace classification head.
+
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Dataset Statistic} & \textbf{Value} \\
+\hline
+Number of Identities & 10 \\
+\hline
+Total Images & 500 \\
+\hline
+Training Images & 300 \\
+\hline
+Validation Images & 200 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Data Preprocessing}
+After gathering the data, the next step is preparing it for training:
+\begin{itemize}
+    \item Face cropping with MTCNN
+    \item Image resizing
+    \item Normalization
+    \item Data Augmentation
+    \begin{itemize}
+        \item RandomHorizontalFlip
+        \item ColorJitter (brightness, contrast)
+    \end{itemize}
+\end{itemize}
+
+\subsection{Feature Extraction and ArcFace Training}
+
+In this phase, we utilized an InceptionResnetV1 architecture pretrained on the VGGFace2 dataset as the backbone network. To adapt the model efficiently to our face recognition task, the early convolutional layers were frozen by disabling their gradient calculations, while the final feature extraction blocks (block8 and last\_linear) were fine-tuned on the target dataset. The ArcFace classification head was trained from scratch on top of the fine-tuned embeddings.
+
+This partial fine-tuning approach preserved the general face representations learned from large-scale datasets while allowing the model to adapt its high-level features to the specific recognition task. By combining pretrained facial representations with ArcFace loss optimization, the system achieved high recognition performance with limited training data.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{assets/architecture_diagram.png}
+    \caption{Proposed architecture: frozen early layers, fine-tuned block8 and last\_linear, and ArcFace classification head}
+    \label{fig:architecture}
+\end{figure}
+
+\section{Training Configuration}
+Training configuration:
+
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Parameter} & \textbf{Value} \\
+\hline
+Optimizer & AdamW \\
+\hline
+Learning Rate & 1e-3 + lr\_scheduler \\
+\hline
+Batch Size & 16 \\
+\hline
+Epochs & 60 \\
+\hline
+Loss Function & ArcFace loss \\
+\hline
+Hardware & Colab T4 \\
+\hline
+\end{tabular}
+\end{center}
+\subsection{Quantitative Performance Metrics}
+\begin{center}
+    
+\begin{tabular}{|l|c|c|}
+\hline
+Metric    & InceptionResnetV1 & InceptionResnetV1 + ArcFace \\
+\hline
+Accuracy  & 94\%      & \textbf{99\%}    \\      
+\hline
+Precision & 63\%      & \textbf{93\%}       \\   
+\hline
+Recall    & 85\%      & \textbf{92\%}     \\     
+\hline
+F1 Score  & 72\%      & \textbf{90\%}  \\ 
+\hline
+
+\end{tabular}
+\end{center}
+
+\subsection{Face Anti-Spoofing Mechanism}
+
+Since our biometric system automatically processes facial detection and logs employee attendance, it is vulnerable to presentation attacks (spoofing). For instance, an absent employee could share a high-resolution digital photograph or video of themselves with a colleague to bypass the authentication checkpoint and falsify attendance.
+
+To mitigate this vulnerability, a dedicated face anti-spoofing module has been integrated into the pipeline. Prior to granting access or logging attendance, the system enforces a live-detection validation phase to verify that the biometric trait belongs to a physically present individual.
+
+\subsubsection{Model Selection:  (ONNX)}
+We deployed the \textbf{Lightweight Face Anti-Spoofing (MiniFAS)} model, optimized via the \textbf{ONNX} (Open Neural Network Exchange) runtime. This model effectively differentiates live, real faces from artificial spoofing mediums, such as:
+\begin{itemize}
+    \item High-quality printed photographs (Paper attacks).
+    \item Digital screen displays and video replays (Replay attacks).
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{assets/live_vs_spoof.png}
+    \caption{Live face acceptance and spoof rejection examples using MiniFAS}
+    \label{fig:liveness}
+\end{figure}
+
+\subsection{Key Advantages}
+\begin{itemize}
+    \item \textbf{High Computational Efficiency:} The architecture is highly lightweight, enabling real-time inference on standard CPU architectures without requiring dedicated GPU acceleration.
+    \item \textbf{System Integrity:} It prevents presentation attacks, ensuring the reliability and non-repudiation of the attendance logs.
+\end{itemize}
+\subsection{Results and Performance}
+After training, the model achieved strong results:
+
+\textbf{Training Convergence:}
+The model showed excellent convergence without overfitting (as shown in the figure). The validation loss continued to decrease alongside the training loss throughout the epochs, indicating effective fine-tuning of the backbone and training of the ArcFace classification head.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{assets/training_curves.png} % Replace with actual image
+    \caption{Training Loss Curves}
+    \label{fig:loss_curves}
+\end{figure}
+
+\textbf{Face Embedding Quality:}
+The model successfully made a great margin between each class making them very separable decreasing confusion (as showed in the figure)
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{assets/embedding_space.png} % Replace with actual image
+    \caption{Embedding Space Visualization}
+    \label{fig:embedding_space}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{assets/tsne_before_after.png}
+    \caption{t-SNE visualization of face embeddings before (pretrained backbone) and after ArcFace training}
+    \label{fig:tsne}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+& \textbf{InceptionResnetV1} & \textbf{InceptionResnetV1 + ArcFace} \\
+\hline
+Anchor + Positive Similarity & 50\%-70\% & \textbf{85\% - 95\%} \\
+\hline
+Anchor + Negative Similarity & 10\%-30\% & \textbf{-10\% - 20\%} \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Interpretation:}
+The intra-class similarity improvement indicates that different images of the same person are now much closer in embedding space (higher similarity = closer vectors). The inter-class similarity decrease shows that different individuals are now more separated, reducing false positives. This margin between classes is crucial for accurate attendance recognition.
+
+\subsection{Attendance Logging Module}
+
+The attendance module records:
+\begin{itemize}
+    \item Employee name
+    \item Date and Time
+    \item Condition (Enter/Leave)
+\end{itemize}
+
+Attendance records are stored in a CSV file or database.
+
+\subsection{Limitations}
+Current limitations include:
+\begin{enumerate}
+    \item \textbf{Image Quality Requirements:}
+    \begin{itemize}
+        \item Optimal lighting conditions required (100-500 lux)
+        \item Frontal face orientation within $\pm 30°$ acceptable
+        \item Minimum face size in image: 50$\times$50 pixels
+    \end{itemize}
+    \item \textbf{Operational Constraints:}
+    \begin{itemize}
+        \item Requires clear face visibility (cannot work with masks, heavy makeup, or significant occlusion)
+        \item Lighting-dependent performance
+        \item Identical twins or very similar individuals may cause confusion
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Future Work}
+Possible future improvements:
+\begin{itemize}
+    \item Larger dataset
+    \item Database integration
+    \item Multi-camera support
+\end{itemize}
+
+\chapter{Conclusion}
+
+This project demonstrates the effectiveness of combining a pretrained InceptionResnetV1 backbone with partial fine-tuning and ArcFace-based classification for face recognition applications. By freezing early convolutional layers, fine-tuning the later feature extraction blocks, and training an ArcFace classification head, the proposed system achieved high recognition accuracy while maintaining low computational requirements. This approach yielded significant improvements in embedding discriminability:
+
+\begin{itemize}
+    \item \textbf{85\%-95\% intra-class similarity} (same person): Embeddings of the same individual are highly similar
+    \item \textbf{0\%-40\% inter-class similarity} (different people): Embeddings of different individuals are well-separated
+\end{itemize}
+
+\textbf{Key contributions:}
+\begin{enumerate}
+    \item Demonstrated effectiveness of ArcFace loss compared to baseline softmax loss
+    \item Validated transfer learning approach for face recognition with limited training data
+    \item Achieved production-ready accuracy for attendance automation
+\end{enumerate}
+
+\textbf{Implications:}
+Face recognition-based attendance systems offer significant advantages over traditional methods in terms of speed, accuracy, and scalability. The proposed system can be deployed in real-world scenarios with appropriate attention to lighting conditions and image quality.
+
+\textbf{Future research directions:}
+\begin{itemize}
+    \item Robustness evaluation under challenging conditions (poor lighting, occlusion, extreme poses)
+    \item Integration with liveness detection for security
+    \item Scalability testing with larger identity databases
+    \item Cross-domain evaluation on other face recognition benchmarks
+\end{itemize}
+
+The success of this project validates the potential of deep learning-based approaches for practical attendance management applications.
+
+\chapter*{Bibliography}
+
+\begin{enumerate}
+    \item Deng, J., Guo, J., Xue, N., Zafeiriou, S., \& Kotsia, I. (2019). ArcFace: Additive Angular Margin Loss for Deep Face Recognition. In \textit{IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)} (pp. 4690-4699). \url{https://arxiv.org/pdf/1801.07698}
+    \item Schroff, F., Kalenichenko, D., \& Philbin, J. (2015). FaceNet: A Unified Embedding for Face Recognition and Clustering. In \textit{IEEE Conference on Computer Vision and Pattern Recognition (CVPR)} (pp. 815-823). \url{https://arxiv.org/pdf/1503.03832}
+    \item Zhang, K., Zhang, Z., Li, Z., \& Qiao, Y. (2016). Joint Face Detection and Alignment using Multi-task Cascaded Convolutional Networks. \textit{IEEE Signal Processing Letters}, 23(10), 1499-1503. \url{https://github.com/ipazc/mtcnn}
+    \item He, K., Zhang, X., Ren, S., \& Sun, J. (2016). Deep Residual Learning for Image Recognition. In \textit{IEEE Conference on Computer Vision and Pattern Recognition (CVPR)} (pp. 770-778). \url{https://arxiv.org/pdf/1512.03385}
+\end{enumerate}
+
+\end{document}

@@ -31,7 +31,10 @@ import type { Page, SlideMeta } from '@open-slide/core';
 const Cover: Page = () => <div>…</div>;
 const Body: Page = () => <div>…</div>;
 
-export const meta: SlideMeta = { title: 'My slide' };
+export const meta: SlideMeta = {
+  title: 'My slide',
+  createdAt: '2026-05-16T12:00:00Z',
+};
 export default [Cover, Body] satisfies Page[];
 ```
 
@@ -39,6 +42,7 @@ export default [Cover, Body] satisfies Page[];
 - `meta.title` (optional) shows in the slide header. Default is the folder name.
 - The slide id is the kebab-case folder name. Pick something short and descriptive (`q2-roadmap`, `team-offsite-2026`).
 - `meta.theme` (optional) marks the slide as built from a theme under `themes/`. The id must match a `<id>.md` basename. Surfaces a back-link chip on the slide card and lists the slide on `/themes/<id>`. Omit if the slide isn't derived from a registered theme.
+- `meta.createdAt` is an **ISO 8601 string literal** (e.g. `'2026-05-16T12:00:00Z'`) set once when the slide is scaffolded. The home page uses it for the default "newest first" sort. Always include it on new slides — **immediately before writing the file, run `node -e "console.log(new Date().toISOString())"` via Bash and paste the exact output** as the value. Don't type a timestamp from memory — you will get the date or time wrong. Must be a plain string literal (no `new Date(...)` or imports in the slide itself) — the framework reads it via a regex at build time, not by evaluating the module.
 
 ## Editing an existing slide
 
@@ -236,13 +240,16 @@ const Content: Page = () => (
   </div>
 );
 
-export const meta: SlideMeta = { title: 'The Big Idea' };
+export const meta: SlideMeta = {
+  title: 'The Big Idea',
+  createdAt: '2026-05-16T12:00:00Z',
+};
 export default [Cover, Content] satisfies Page[];
 ```
 
 ## Assets
 
-Place files under `slides/<id>/assets/`. Import them as ES modules:
+**Slide-local assets** live under `slides/<id>/assets/` — anything one-off to a single slide. Import them as ES modules:
 
 ```tsx
 import hero from './assets/hero.jpg';
@@ -255,6 +262,14 @@ For URL-only access:
 ```tsx
 const videoUrl = new URL('./assets/intro.mp4', import.meta.url).href;
 ```
+
+**Global assets** — anything reused across decks or themes (company logos, presenter avatars, recurring icons) — live in the project root `assets/` folder. Import them via the `@assets` alias:
+
+```tsx
+import logo from '@assets/logos/acme.svg';
+```
+
+A `themes/*.md` file may name an asset path in its prose (e.g. "use `@assets/logos/acme.svg` in the title slot"); the slide imports it explicitly.
 
 Skip the `assets/` folder entirely for pure-text slides.
 
@@ -275,6 +290,191 @@ The user uploads the real file via the Assets panel, then clicks the placeholder
 **Do not use a placeholder** for decoration, generic "stock photo" filler, hero imagery on a text-heavy slide, or anywhere a typographic / iconographic / illustrative solution would do. If you can carry the page with type, layout, and color — do that. Empty placeholders the user has to fill are friction; only spend that friction when the alternative is worse.
 
 Size the placeholder to the slot it occupies. Pass `width`/`height` when the layout has a fixed image box; omit them when the placeholder fills a flex/grid cell. The `hint` should describe the *content* the user needs ("Q3 revenue chart") not the *role* ("hero image").
+
+## Page numbers
+
+If a footer shows the current page (`03 / 12`, `Page 3`, etc.), read it from `useSlidePageNumber()` — **never hardcode** `n` / `TOTAL`. Inserting, reordering, or deleting a page would otherwise force you to retouch every footer.
+
+```tsx
+import { useSlidePageNumber } from '@open-slide/core';
+
+const Footer = () => {
+  const { current, total } = useSlidePageNumber();
+  return (
+    <span>{String(current).padStart(2, '0')} / {String(total).padStart(2, '0')}</span>
+  );
+};
+```
+
+`current` is 1-indexed (matches what readers see) and `total` is the slide's page count. The hook works in every render context (main viewer, thumbnails, overview grid, present mode, presenter window, HTML/PDF export) — the same `<Footer />` JSX is correct everywhere. Call the hook inside a component that's used **per page**; don't try to call it at module top level.
+
+## Page transitions
+
+The framework can run an enter/exit animation between every slide change. There's **no default** — pages snap unless you declare a `SlideTransition`. Snap-swap is a perfectly tasteful default; only opt in when motion adds something.
+
+`prefers-reduced-motion: reduce` is honored automatically. You don't write a fallback.
+
+### Contract
+
+Module-level for the whole deck; per-page to override. The **incoming page wins**: navigating A → B uses `pages[B].transition ?? module.transition`. Its `exit` plays on A, its `enter` plays on B. Going back B → A uses A's transition.
+
+```tsx
+import type { Page, SlideTransition } from '@open-slide/core';
+
+const Cover: Page = () => <section>…</section>;
+const Body:  Page = () => <section>…</section>;
+
+// Module-level default — every page inherits unless it overrides.
+export const transition: SlideTransition = { /* … */ };
+
+// Per-page override.
+Cover.transition = { /* … */ };
+
+export default [Cover, Body];
+```
+
+```ts
+type TransitionPhase = {
+  keyframes: Keyframe[] | PropertyIndexedKeyframes;  // WAAPI keyframes
+  duration?: number;  // ms (falls back to top-level duration)
+  easing?: string;    // CSS easing
+  delay?: number;     // ms — use to overlap exit + enter
+};
+type SlideTransition = {
+  duration: number;          // top-level fallback
+  easing?: string;           // top-level fallback
+  enter?: TransitionPhase;   // runs on incoming page
+  exit?:  TransitionPhase;   // runs on outgoing page
+};
+```
+
+The framework also exposes `--osd-dir` (`1` forward, `-1` backward) and `data-osd-dir` on the wrapper, so a single keyframe can mirror direction without a JS callback.
+
+### Design principles (hold the line)
+
+The single loudest signal of "made in PowerPoint" is six different transitions in one deck. Restraint is the rhythm.
+
+- **Pick one DNA, hold it across the deck.** Same duration band, same easing pair, same out-then-in stagger. Variation lives only in *which property* gets the small nudge — Y, X, opacity, scale, blur.
+- **Duration: 140–280 ms.** Exit 140–180 ms, enter 200–280 ms, enter delayed ~80 ms so they overlap but don't fight. Past 350 ms is video-editor territory; reserve for genuine state changes.
+- **Magnitude ceiling: 12 px or 3% scale.** A 6 px Y-rise reads as "next thought." A 1920 px translateX reads as "different document." Premium tools move barely enough to register.
+- **Opacity is always part of it.** Pure-transform transitions look stiff; pure-opacity transitions are the safest possible default.
+- **Easing: ease-in for exit, ease-out for enter.** `cubic-bezier(0.4, 0, 1, 1)` going out, `cubic-bezier(0, 0, 0.2, 1)` coming in. Never `linear` (feels like a slideshow). Reserve symmetric `ease-in-out` for state-anchored morphs only.
+
+### Tasteful family — six members, one DNA
+
+Use this set as a starting point. Pick one as the deck's house transition; optionally reserve a second for hero/cover slides and a third for genuine section breaks. The CSS-`calc` + `--osd-dir` trick lets a single definition mirror itself on backward navigation when needed.
+
+```tsx
+const EASE_OUT = 'cubic-bezier(0, 0, 0.2, 1)';
+const EASE_IN  = 'cubic-bezier(0.4, 0, 1, 1)';
+
+// RISE — house quiet. 6 px Y. Use as module default.
+export const transition: SlideTransition = {
+  duration: 200,
+  exit:  { duration: 140, easing: EASE_IN,
+           keyframes: [
+             { opacity: 1, transform: 'translateY(0)' },
+             { opacity: 0, transform: 'translateY(-4px)' },
+           ] },
+  enter: { duration: 200, delay: 80, easing: EASE_OUT,
+           keyframes: [
+             { opacity: 0, transform: 'translateY(6px)' },
+             { opacity: 1, transform: 'translateY(0)' },
+           ] },
+};
+
+// DISSOLVE — pure opacity. The quietest possible.
+const dissolve: SlideTransition = {
+  duration: 240,
+  exit:  { duration: 200, easing: EASE_IN,
+           keyframes: [{ opacity: 1 }, { opacity: 0 }] },
+  enter: { duration: 240, delay: 40, easing: EASE_OUT,
+           keyframes: [{ opacity: 0 }, { opacity: 1 }] },
+};
+
+// SETTLE — cover-grade. Rise + a hair of blur on enter only.
+Cover.transition = {
+  duration: 280,
+  exit:  { duration: 160, easing: EASE_IN,
+           keyframes: [
+             { opacity: 1, transform: 'translateY(0)' },
+             { opacity: 0, transform: 'translateY(-6px)' },
+           ] },
+  enter: { duration: 280, delay: 100, easing: EASE_OUT,
+           keyframes: [
+             { opacity: 0, transform: 'translateY(12px)', filter: 'blur(4px)' },
+             { opacity: 1, transform: 'translateY(0)',    filter: 'blur(0)'   },
+           ] },
+};
+
+// BLOOM — scale 0.97 → 1, no translate. Materializes in place.
+const bloom: SlideTransition = {
+  duration: 240,
+  exit:  { duration: 160, easing: EASE_IN,
+           keyframes: [
+             { opacity: 1, transform: 'scale(1)' },
+             { opacity: 0, transform: 'scale(1.01)' },
+           ] },
+  enter: { duration: 240, delay: 80, easing: EASE_OUT,
+           keyframes: [
+             { opacity: 0, transform: 'scale(0.97)' },
+             { opacity: 1, transform: 'scale(1)' },
+           ] },
+};
+
+// FALL — mirrored Rise. Incoming page comes down from above.
+const fall: SlideTransition = {
+  duration: 200,
+  exit:  { duration: 140, easing: EASE_IN,
+           keyframes: [
+             { opacity: 1, transform: 'translateY(0)' },
+             { opacity: 0, transform: 'translateY(4px)' },
+           ] },
+  enter: { duration: 200, delay: 80, easing: EASE_OUT,
+           keyframes: [
+             { opacity: 0, transform: 'translateY(-6px)' },
+             { opacity: 1, transform: 'translateY(0)' },
+           ] },
+};
+
+// BREATH — section break. Exit fully, hold 120 ms, then enter.
+// Reserve for genuine chapter dividers; use at most 1–2× per deck.
+const breath: SlideTransition = {
+  duration: 460,
+  exit:  { duration: 180, easing: EASE_IN,
+           keyframes: [{ opacity: 1 }, { opacity: 0 }] },
+  enter: { duration: 240, delay: 300, easing: EASE_OUT,
+           keyframes: [
+             { opacity: 0, transform: 'translateY(8px)' },
+             { opacity: 1, transform: 'translateY(0)' },
+           ] },
+};
+```
+
+All six share the same DNA — they only differ in which property carries the small nudge. The reader perceives variety; the eye still reads one consistent hand.
+
+### Direction-aware keyframes (use sparingly)
+
+Most tasteful tools don't mirror on backward navigation. When you genuinely need to — e.g. a horizontal slide that should reverse — use `--osd-dir` inside `calc()`:
+
+```tsx
+{ transform: 'translateX(calc(var(--osd-dir, 1) * 8px))' },
+{ transform: 'translateX(0)' },
+```
+
+If you find yourself reaching for this on every transition, you're probably over-designing. Forward = backward is the more refined default.
+
+### Transition anti-patterns
+
+- ❌ Six different transitions across six pages — the single loudest "made in PowerPoint" tell.
+- ❌ `translateX(100%)` slide-from-side — iOS modal / PowerPoint Push; not a slide change.
+- ❌ Aggressive scale-pop (e.g. `0.85 → 1`) + blur — lightbox / photo-viewer vocabulary; implies zooming *into* something.
+- ❌ `clip-path: inset(…)` reveals — After Effects vocabulary; theatrical.
+- ❌ Parallel blur on both layers at once — visual mush; the eye can't fixate.
+- ❌ Duration > 350 ms for a standard slide change — drags.
+- ❌ Translate > 12 px or scale > 3% — reads as rupture, not continuity.
+- ❌ `linear` easing — feels like a slideshow, not a product.
+- ❌ Declaring a transition on every deck. **If you don't have a clear reason, omit it.** Snap-swap is fine.
 
 ## Repeated elements: component, not `map`
 
@@ -339,8 +539,9 @@ This applies whenever the *visual element* repeats, not whenever the *data* does
 - [ ] Slide declares a top-level `export const design: DesignSystem = { … }` and references the values via `var(--osd-X)` (use `design.X` only when you need a JS number for arithmetic). Only omit the `design` const for a one-off slide whose palette is intentionally locked.
 - [ ] One idea per page.
 - [ ] Visually repeated elements (cards, tiles, logo rows) are rendered as explicit `<Component />` instances, not via `array.map` over a data list.
-- [ ] All imported assets exist on disk under `slides/<id>/assets/`.
+- [ ] All imported assets exist on disk — slide-local under `slides/<id>/assets/`, or global under `assets/` (imported via `@assets/...`).
 - [ ] Every `<ImagePlaceholder>` corresponds to a real image the user must supply — not decorative filler. If it could be replaced by typography or layout, it should be.
+- [ ] If a `SlideTransition` is declared, every page sits in one family — same duration band (140–280 ms), same easing pair, same out-then-in stagger, magnitude under 12 px / 3%. No six-different-vocabularies decks. When in doubt, omit transitions entirely.
 - [ ] Nothing outside `slides/<id>/` was edited.
 
 ## Anti-patterns
