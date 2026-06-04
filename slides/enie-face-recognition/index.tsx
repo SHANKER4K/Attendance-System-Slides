@@ -1,6 +1,20 @@
 import React from "react";
 import type { DesignSystem, Page, SlideMeta } from "@open-slide/core";
 
+export const notes: (string | undefined)[] = [
+  "Assalamu alaykum. Today, we will present what we covered during our internship at ENIE. After that, we will conduct a brief interview about the company. Then, we will present the project we worked on. First, my friend will present the internship phase, and then I will move on to the project.",
+  undefined,
+  `During the internship, we have seen a great problem of attendance and punctuality issues. Employees frequently arrive late or leave early, making a huge gap in the production system.
+There was also a problem in the attendance devices they have, some recognition problems with some employees.
+All of that results in wasting time and always starting late, so we needed to fix that problem!`,
+  "Regarding the problem we decided to make an improved version of the attendance system ",
+  "The project works as follows: First the camera detects the employee check if he is live or fake, align the face image, embed it, recognize him and finally log him",
+  `The architecture as follow there is two options:
+1- Registering an employee
+2- Daily attendance`,
+  "We gathered a faces dataset from kaggle for finetune and feature selection, the dataset have some problems that some individuals have less than 4 images so we have to clean them.",
+];
+
 export const design: DesignSystem = {
   palette: { bg: "#081626", text: "#E2E8F0", accent: "#794fee" },
   fonts: {
@@ -757,32 +771,32 @@ const Slide03Problem: Page = () => (
             marginTop: 24,
           }}
         >
-          Current System: Pen & Paper
+          Current System: Bad Attendance
         </div>
       </div>
       <div
         style={{ flex: 1, display: "flex", flexDirection: "column", gap: 20 }}
       >
         <ProblemCard
-          title="Human Errors"
-          desc="Manual registration is prone to buddy punching and widespread errors."
+          title="Attendance and punctuality issues"
+          desc="Employees frequently arrive late or leave early, and some even attempt to evade attendance tracking entirely."
           delay="delay-200"
         />
         <ProblemCard
-          title="Wasted Time"
-          desc="Countless hours wasted processing and validating daily attendance records."
+          title="Hardware Failures"
+          desc="The devices used by the company are very weak and fragile, resulting in a heavier workload for the IT team."
           delay="delay-300"
         />
         <ProblemCard
-          title="No Immediate Alerts"
-          desc="Lack of real-time notification when critical workers are absent."
+          title="Wasted Time"
+          desc="Attendance problems cause employees to wait for the IT team to fix problems."
           delay="delay-400"
         />
-        <ProblemCard
+        {/* <ProblemCard
           title="Reporting Difficulty"
           desc="Generating monthly reports requires exhausting manual data entry."
           delay="delay-500"
-        />
+        /> */}
       </div>
     </div>
   </div>
@@ -1408,7 +1422,9 @@ const Slide07Dataset: Page = () => (
                 fontWeight: 800,
                 color: "white",
               }}
-            >≥ 4</div>
+            >
+              ≥ 4
+            </div>
             <div
               style={{
                 fontSize: 22,
@@ -2825,77 +2841,77 @@ const Slide16Results: Page = () => (
   </div>
 );
 
-const Slide17Learnings: Page = () => (
-  <div style={{ ...fill, background: lightBg, padding: "80px 120px" }}>
-    <MotionStyles />
-    <h2
-      className="animate-fade-up"
-      style={{
-        fontFamily: "var(--osd-font-display)",
-        fontSize: 80,
-        fontWeight: 800,
-        margin: "0 0 60px 0",
-        color: lightText,
-        textAlign: "center",
-      }}
-    >
-      Key Learnings
-    </h2>
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        gap: 40,
-        flex: 1,
-      }}
-    >
-      <LearningCard
-        delay="delay-100"
-        title="Applied Deep Learning"
-        icon="🧠"
-        items={
-          <>
-            <li>Implemented a CVPR 2019 research paper from scratch.</li>
-            <li>Transfer Learning on Colab T4 GPUs.</li>
-          </>
-        }
-      />
-      <LearningCard
-        delay="delay-200"
-        title="Software Engineering"
-        icon="⚙️"
-        items={
-          <>
-            <li>Full ML pipeline from dataset parsing to deployment.</li>
-            <li>Python backend integration with scalable logic.</li>
-          </>
-        }
-      />
-      <LearningCard
-        delay="delay-300"
-        title="Industrial Reality"
-        icon="🏭"
-        items={
-          <>
-            <li>Adapted for real-world constraints (lighting, latency).</li>
-            <li>Chasm between "prototypes" and "production".</li>
-          </>
-        }
-      />
-      <LearningCard
-        delay="delay-400"
-        title="Academic Research"
-        icon="🔬"
-        items={
-          <>
-            <li>Primary literature directly, not tutorials.</li>
-            <li>Hypersphere math to PyTorch tensors.</li>
-          </>
-        }
-      />
-    </div>
-  </div>
-);
+// const Slide17Learnings: Page = () => (
+//   <div style={{ ...fill, background: lightBg, padding: "80px 120px" }}>
+//     <MotionStyles />
+//     <h2
+//       className="animate-fade-up"
+//       style={{
+//         fontFamily: "var(--osd-font-display)",
+//         fontSize: 80,
+//         fontWeight: 800,
+//         margin: "0 0 60px 0",
+//         color: lightText,
+//         textAlign: "center",
+//       }}
+//     >
+//       Key Learnings
+//     </h2>
+//     <div
+//       style={{
+//         display: "grid",
+//         gridTemplateColumns: "1fr 1fr",
+//         gap: 40,
+//         flex: 1,
+//       }}
+//     >
+//       <LearningCard
+//         delay="delay-100"
+//         title="Applied Deep Learning"
+//         icon="🧠"
+//         items={
+//           <>
+//             <li>Implemented a CVPR 2019 research paper from scratch.</li>
+//             <li>Transfer Learning on Colab T4 GPUs.</li>
+//           </>
+//         }
+//       />
+//       <LearningCard
+//         delay="delay-200"
+//         title="Software Engineering"
+//         icon="⚙️"
+//         items={
+//           <>
+//             <li>Full ML pipeline from dataset parsing to deployment.</li>
+//             <li>Python backend integration with scalable logic.</li>
+//           </>
+//         }
+//       />
+//       <LearningCard
+//         delay="delay-300"
+//         title="Industrial Reality"
+//         icon="🏭"
+//         items={
+//           <>
+//             <li>Adapted for real-world constraints (lighting, latency).</li>
+//             <li>Chasm between "prototypes" and "production".</li>
+//           </>
+//         }
+//       />
+//       <LearningCard
+//         delay="delay-400"
+//         title="Academic Research"
+//         icon="🔬"
+//         items={
+//           <>
+//             <li>Primary literature directly, not tutorials.</li>
+//             <li>Hypersphere math to PyTorch tensors.</li>
+//           </>
+//         }
+//       />
+//     </div>
+//   </div>
+// );
 
 const Slide18ThankYou: Page = () => (
   <div
@@ -2978,6 +2994,6 @@ export default [
   Slide14Comparison,
   Slide15Transfer,
   Slide16Results,
-  Slide17Learnings,
+  // Slide17Learnings,
   Slide18ThankYou,
 ] satisfies Page[];
