@@ -695,9 +695,7 @@ const Slide02Context: Page = () => (
         margin: "0 0 80px 0",
         color: lightText,
       }}
-    >
-      What I Observed
-    </h2>
+    >What We Observed</h2>
     <div
       style={{
         display: "grid",
@@ -2973,7 +2971,7 @@ export default [
   Slide11Softmax,
   Slide12Geometry,
   // Slide13Math,
-  Slide14Comparison,
+  // Slide14Comparison,
   // Slide15Transfer,
   Slide16Results,
   Slide17Learnings,
