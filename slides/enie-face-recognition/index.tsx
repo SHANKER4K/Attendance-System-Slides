@@ -400,15 +400,15 @@ const PipelineSVG = () => (
       <PipelineNode
         x={300}
         num="02"
-        title="Anti-Spoofing"
-        sub="MiniFAS"
+        title="Alignment"
+        sub="68 Landmarks"
         hasArrow
       />
       <PipelineNode
         x={600}
         num="03"
-        title="Alignment"
-        sub="68 Landmarks"
+        title="Anti-Spoofing"
+        sub="MiniFAS"
         hasArrow
       />
       <PipelineNode
@@ -428,26 +428,6 @@ const PipelineSVG = () => (
       <PipelineNode x={1500} num="06" title="Attendance" sub="CSV / Excel" />
     </g>
   </svg>
-);
-
-const CompRow = ({ aspect, triplet, arcface, delay, bg }: any) => (
-  <div
-    className={`animate-fade-up ${delay}`}
-    style={{
-      display: "grid",
-      gridTemplateColumns: "1.5fr 1fr 1fr",
-      padding: "20px 32px",
-      fontSize: 24,
-      background: bg,
-      borderBottom: "1px solid #E2E8F0",
-    }}
-  >
-    <div style={{ fontWeight: "bold", color: "#334155" }}>{aspect}</div>
-    <div style={{ color: "#64748B" }}>{triplet}</div>
-    <div style={{ color: "var(--osd-accent)", fontWeight: "bold" }}>
-      {arcface}
-    </div>
-  </div>
 );
 
 const StatCard = ({ val, label, delay }: any) => (
@@ -481,6 +461,51 @@ const StatCard = ({ val, label, delay }: any) => (
   </div>
 );
 
+const MetricCompare = ({ metric, softmax, arcface, delay }: any) => (
+  <div
+    className={`animate-fade-up ${delay}`}
+    style={{
+      flex: 1,
+      background: "rgba(255,255,255,0.03)",
+      border: "1px solid rgba(255,255,255,0.1)",
+      borderTop: `4px solid ${highlight}`,
+      borderRadius: 12,
+      padding: "20px 16px",
+      textAlign: "center",
+      display: "flex",
+      flexDirection: "column",
+      gap: 8,
+    }}
+  >
+    <div style={{ fontSize: 20, color: "#94A3B8", fontFamily: "monospace" }}>
+      {metric}
+    </div>
+    <div style={{ fontSize: 14, color: "#64748B", marginTop: 4 }}>
+      {"InceptionResNetV1 "}
+    </div>
+    <div
+      style={{
+        fontSize: 34,
+        fontWeight: 800,
+        color: "#94A3B8",
+      }}
+    >
+      {softmax}
+    </div>
+    <div style={{ height: 1, background: "rgba(255,255,255,0.08)" }} />
+    <div style={{ fontSize: 14, color: highlight, marginTop: 4 }}>+ArcFace</div>
+    <div
+      style={{
+        fontSize: 34,
+        fontWeight: 800,
+        color: highlight,
+      }}
+    >
+      {arcface}
+    </div>
+  </div>
+);
+
 const OptionCard = ({ title, req, res, verdict, color, delay }: any) => (
   <div
     className={`animate-fade-up ${delay}`}
@@ -505,10 +530,10 @@ const OptionCard = ({ title, req, res, verdict, color, delay }: any) => (
       {title}
     </h4>
     <div style={{ fontSize: 24, color: "#94A3B8" }}>
-      <span style={{ color, fontWeight: "bold" }}>Requires:</span> {req}
+      <span style={{ color, fontWeight: "bold" }}>{"Requires:"}</span> {req}
     </div>
     <div style={{ fontSize: 24, color: "#94A3B8" }}>
-      <span style={{ color, fontWeight: "bold" }}>Result:</span> {res}
+      <span style={{ color, fontWeight: "bold" }}>{"Result:"}</span> {res}
     </div>
     <div
       style={{
@@ -614,22 +639,23 @@ const Slide01Title: Page = () => (
         width: "fit-content",
       }}
     >
-      ENIE · 2025
+      2025 · 2026
     </div>
     <h1
       className="animate-fade-up"
       style={{
         fontFamily: "var(--osd-font-display)",
-        fontSize: 130,
+        fontSize: "103px",
         fontWeight: 800,
         lineHeight: 1.1,
         margin: "0 0 24px 0",
         color: "white",
       }}
     >
-      Face Recognition
+      Intelligent Attendance Control
       <br />
-      Attendance System
+      System using Face Recognition
+      {""}
     </h1>
     <h2
       className="animate-fade-up delay-100"
@@ -641,7 +667,7 @@ const Slide01Title: Page = () => (
         margin: "0 0 40px 0",
       }}
     >
-      Intelligent Face Recognition Attendance System
+      {""}
     </h2>
     <p
       className="animate-fade-up delay-200"
@@ -877,10 +903,6 @@ const Slide04Solution: Page = () => (
           Instant automated CSV / Excel report generation for HR departments.
         </li>
       </ul>
-      <InsightBox
-        delay="delay-700"
-        text="Important Note: This system is an assistive tool. The AI flags anomalies, but human supervisors retain final authority."
-      />
     </div>
   </div>
 );
@@ -1084,7 +1106,6 @@ const Slide06Architecture: Page = () => (
         border: `1px solid ${warning}`,
         borderRadius: 16,
         padding: "40px 20px",
-        flex: 1,
       }}
     >
       <div
@@ -1361,7 +1382,7 @@ const Slide07Dataset: Page = () => (
                 color: "white",
               }}
             >
-              5,749
+              5,985
             </div>
             <div
               style={{
@@ -1371,7 +1392,7 @@ const Slide07Dataset: Page = () => (
                 fontFamily: "monospace",
               }}
             >
-              Individuals
+              Total images (filtered)
             </div>
           </div>
           <div
@@ -1392,7 +1413,7 @@ const Slide07Dataset: Page = () => (
                 color: "white",
               }}
             >
-              1,288
+              423
             </div>
             <div
               style={{
@@ -1423,7 +1444,7 @@ const Slide07Dataset: Page = () => (
                 color: "white",
               }}
             >
-              ≥ 4
+              ≥ 5
             </div>
             <div
               style={{
@@ -1592,116 +1613,6 @@ const Slide08AntiSpoofing: Page = () => (
           liveness in real-time by analyzing texture and depth cues invisible to
           the naked eye.
         </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 20,
-              background: "rgba(34, 197, 94, 0.05)",
-              border: "1px solid rgba(34, 197, 94, 0.2)",
-              borderRadius: 12,
-              padding: 24,
-            }}
-          >
-            <div
-              style={{
-                width: 48,
-                height: 48,
-                borderRadius: "50%",
-                background: "rgba(34, 197, 94, 0.1)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <span style={{ fontSize: 24, fontWeight: 900, color: "#22C55E" }}>
-                ⚡
-              </span>
-            </div>
-            <div>
-              <div style={{ fontSize: 24, fontWeight: "bold", color: "white" }}>
-                CPU Real-time
-              </div>
-              <div style={{ fontSize: 22, color: "#94A3B8" }}>
-                No GPU required, runs alongside detection
-              </div>
-            </div>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 20,
-              background: "rgba(34, 197, 94, 0.05)",
-              border: "1px solid rgba(34, 197, 94, 0.2)",
-              borderRadius: 12,
-              padding: 24,
-            }}
-          >
-            <div
-              style={{
-                width: 48,
-                height: 48,
-                borderRadius: "50%",
-                background: "rgba(34, 197, 94, 0.1)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <span style={{ fontSize: 24, fontWeight: 900, color: "#22C55E" }}>
-                🛡️
-              </span>
-            </div>
-            <div>
-              <div style={{ fontSize: 24, fontWeight: "bold", color: "white" }}>
-                System Integrity
-              </div>
-              <div style={{ fontSize: 22, color: "#94A3B8" }}>
-                Prevents attendance falsification
-              </div>
-            </div>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 20,
-              background: "rgba(34, 197, 94, 0.05)",
-              border: "1px solid rgba(34, 197, 94, 0.2)",
-              borderRadius: 12,
-              padding: 24,
-            }}
-          >
-            <div
-              style={{
-                width: 48,
-                height: 48,
-                borderRadius: "50%",
-                background: "rgba(34, 197, 94, 0.1)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <span style={{ fontSize: 24, fontWeight: 900, color: "#22C55E" }}>
-                ✓
-              </span>
-            </div>
-            <div>
-              <div style={{ fontSize: 24, fontWeight: "bold", color: "white" }}>
-                Non-Repudiation
-              </div>
-              <div style={{ fontSize: 22, color: "#94A3B8" }}>
-                Ensures physical presence
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
       <div className="animate-fade-up delay-300" style={{ flex: 1 }}>
         <h3
@@ -1970,7 +1881,7 @@ const Slide10Embeddings: Page = () => (
 );
 
 const Slide11Softmax: Page = () => (
-  <div style={{ ...fill, background: lightBg, padding: "80px 120px" }}>
+  <div style={{ ...fill, background: "var(--osd-bg)", padding: "80px 120px" }}>
     <MotionStyles />
     <h2
       className="animate-fade-up"
@@ -1978,241 +1889,284 @@ const Slide11Softmax: Page = () => (
         fontFamily: "var(--osd-font-display)",
         fontSize: 72,
         fontWeight: 800,
-        margin: "0 0 20px 0",
-        color: lightText,
+        margin: "0 0 16px 0",
+        color: "white",
       }}
     >
-      Why Softmax Is Not Enough
+      Face Recognition
     </h2>
     <p
-      className="animate-fade-up delay-100 justify-text"
+      className="animate-fade-up delay-100"
       style={{
         fontSize: 28,
-        color: "#475569",
-        margin: "0 0 40px 0",
-        lineHeight: 1.6,
+        color: "#94A3B8",
+        margin: "0 0 48px 0",
+        lineHeight: 1.5,
       }}
     >
-      Standard Softmax works for closed-set classification but inherently fails
-      to confidently reject unknowns in open-set face recognition due to a lack
-      of explicit geometric margins.
+      Once embeddings are extracted, the system compares each query face against
+      the enrolled gallery to identify the person
     </p>
     <div
       style={{
         display: "grid",
         gridTemplateColumns: "1fr 1fr 1fr",
         gap: 32,
-        marginBottom: 60,
+        flex: 1,
       }}
     >
       <div
         className="animate-fade-up delay-200"
         style={{
-          background: "white",
-          padding: 32,
+          background: "rgba(255,255,255,0.03)",
+          border: "1px solid rgba(255,255,255,0.1)",
           borderRadius: 16,
-          borderTop: `4px solid ${danger}`,
-          boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
+          padding: 32,
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <h4
+        <div
           style={{
-            fontSize: 28,
-            margin: "0 0 12px 0",
-            fontFamily: "var(--osd-font-display)",
-            color: lightText,
+            fontSize: 20,
+            fontWeight: 700,
+            color: highlight,
+            fontFamily: "monospace",
+            marginBottom: 16,
           }}
         >
-          1. No Safety Margin
-        </h4>
-        <p
-          style={{ fontSize: 22, margin: 0, color: "#64748B", lineHeight: 1.6 }}
+          STEP 1 · ENCODE
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 12,
+            flex: 1,
+          }}
         >
-          Decision boundary at midpoint between classes — zero room for
-          variation error.
-        </p>
+          <div
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              padding: 16,
+              borderRadius: 10,
+              borderLeft: `4px solid ${highlight}`,
+            }}
+          >
+            <div style={{ fontSize: 22, color: "white", fontWeight: 600 }}>
+              Capture Face
+            </div>
+            <div style={{ fontSize: 18, color: "#94A3B8", marginTop: 4 }}>
+              Camera grabs a frame and MTCNN detects the face
+            </div>
+          </div>
+          <div
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              padding: 16,
+              borderRadius: 10,
+              borderLeft: `4px solid ${highlight}`,
+            }}
+          >
+            <div style={{ fontSize: 22, color: "white", fontWeight: 600 }}>
+              512-dim Embedding
+            </div>
+            <div style={{ fontSize: 18, color: "#94A3B8", marginTop: 4 }}>
+              InceptionResNetV1 produces a compact feature vector
+            </div>
+          </div>
+          <div
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              padding: 16,
+              borderRadius: 10,
+              borderLeft: `4px solid ${highlight}`,
+            }}
+          >
+            <div style={{ fontSize: 22, color: "white", fontWeight: 600 }}>
+              L2 Normalize
+            </div>
+            <div style={{ fontSize: 18, color: "#94A3B8", marginTop: 4 }}>
+              Projects onto the unit hypersphere for consistent comparison
+            </div>
+          </div>
+        </div>
       </div>
       <div
         className="animate-fade-up delay-300"
         style={{
-          background: "white",
-          padding: 32,
+          background: "rgba(255,255,255,0.03)",
+          border: "1px solid rgba(255,255,255,0.1)",
           borderRadius: 16,
-          borderTop: `4px solid ${warning}`,
-          boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
+          padding: 32,
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <h4
+        <div
           style={{
-            fontSize: 28,
-            margin: "0 0 12px 0",
-            fontFamily: "var(--osd-font-display)",
-            color: lightText,
+            fontSize: 20,
+            fontWeight: 700,
+            color: warning,
+            fontFamily: "monospace",
+            marginBottom: 16,
           }}
         >
-          2. Intra-class Variance
-        </h4>
-        <p
-          style={{ fontSize: 22, margin: 0, color: "#64748B", lineHeight: 1.6 }}
+          STEP 2 · COMPARE
+        </div>
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            gap: 16,
+          }}
         >
-          Model is not penalized for letting same-person photos drift loosely
-          apart.
-        </p>
+          <div
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              padding: 16,
+              borderRadius: 10,
+              borderLeft: `4px solid ${warning}`,
+            }}
+          >
+            <div style={{ fontSize: 22, color: "white", fontWeight: 600 }}>
+              Cosine Similarity
+            </div>
+            <div style={{ fontSize: 18, color: "#94A3B8", marginTop: 4 }}>
+              C(X,Y) = (X · Y) / (||X|| · ||Y||)
+            </div>
+          </div>
+          <div
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              padding: 16,
+              borderRadius: 10,
+              borderLeft: `4px solid ${warning}`,
+            }}
+          >
+            <div style={{ fontSize: 22, color: "white", fontWeight: 600 }}>
+              Gallery Search
+            </div>
+            <div style={{ fontSize: 18, color: "#94A3B8", marginTop: 4 }}>
+              Query embedding matched against all enrolled employees
+            </div>
+          </div>
+        </div>
       </div>
       <div
         className="animate-fade-up delay-400"
         style={{
-          background: "white",
-          padding: 32,
+          background: "rgba(255,255,255,0.03)",
+          border: "1px solid rgba(255,255,255,0.1)",
           borderRadius: 16,
-          borderTop: `4px solid ${warning}`,
-          boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
+          padding: 32,
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <h4
+        <div
           style={{
-            fontSize: 28,
-            margin: "0 0 12px 0",
-            fontFamily: "var(--osd-font-display)",
-            color: lightText,
+            fontSize: 20,
+            fontWeight: 700,
+            color: success,
+            fontFamily: "monospace",
+            marginBottom: 16,
           }}
         >
-          3. Poor Inter-class Gap
-        </h4>
-        <p
-          style={{ fontSize: 22, margin: 0, color: "#64748B", lineHeight: 1.6 }}
+          STEP 3 · DECIDE
+        </div>
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            gap: 16,
+          }}
         >
-          Different people's embeddings stay too close if the classifier barely
-          tells them apart.
-        </p>
+          <div
+            style={{
+              background: "rgba(34, 197, 94, 0.08)",
+              padding: 16,
+              borderRadius: 10,
+              borderLeft: `4px solid ${success}`,
+            }}
+          >
+            <div style={{ fontSize: 22, color: "white", fontWeight: 600 }}>
+              Match Found ✓
+            </div>
+            <div style={{ fontSize: 18, color: "#94A3B8", marginTop: 4 }}>
+              Similarity ≥ threshold → employee identified → attendance logged
+            </div>
+          </div>
+          <div
+            style={{
+              background: "rgba(239, 68, 68, 0.08)",
+              padding: 16,
+              borderRadius: 10,
+              borderLeft: `4px solid ${danger}`,
+            }}
+          >
+            <div style={{ fontSize: 22, color: "white", fontWeight: 600 }}>
+              Unknown ✗
+            </div>
+            <div style={{ fontSize: 18, color: "#94A3B8", marginTop: 4 }}>
+              Below threshold → person not recognised → access denied
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <div className="animate-fade-in delay-500" style={{ flex: 1 }}>
-      <svg width="100%" height="220" viewBox="0 0 1200 220">
-        <rect
-          x="50"
-          y="20"
-          width="300"
-          height="160"
-          rx="16"
-          fill="white"
-          stroke="#E2E8F0"
-          strokeWidth="2"
-        />
-        <text
-          x="200"
-          y="60"
-          fill={lightText}
-          fontSize="28"
-          fontWeight="bold"
-          textAnchor="middle"
-          fontFamily="var(--osd-font-display)"
-        >
-          Softmax
-        </text>
-        <line
-          x1="200"
-          y1="80"
-          x2="200"
-          y2="170"
-          stroke={danger}
-          strokeWidth="4"
-        />
-        <text x="140" y="140" fill={highlight} fontSize="36" fontWeight="bold">
-          A
-        </text>
-        <text x="260" y="140" fill={warning} fontSize="36" fontWeight="bold">
-          B
-        </text>
-        <rect
-          x="450"
-          y="20"
-          width="300"
-          height="160"
-          rx="16"
-          fill="white"
-          stroke="#E2E8F0"
-          strokeWidth="2"
-        />
-        <text
-          x="600"
-          y="60"
-          fill={lightText}
-          fontSize="28"
-          fontWeight="bold"
-          textAnchor="middle"
-          fontFamily="var(--osd-font-display)"
-        >
-          CosFace
-        </text>
-        <rect x="570" y="80" width="60" height="90" fill="url(#marginGrad)" />
-        <line
-          x1="570"
-          y1="80"
-          x2="570"
-          y2="170"
-          stroke={highlight}
-          strokeWidth="2"
-        />
-        <line
-          x1="630"
-          y1="80"
-          x2="630"
-          y2="170"
-          stroke={warning}
-          strokeWidth="2"
-        />
-        <text x="520" y="140" fill={highlight} fontSize="36" fontWeight="bold">
-          A
-        </text>
-        <text x="680" y="140" fill={warning} fontSize="36" fontWeight="bold">
-          B
-        </text>
-        <rect
-          x="850"
-          y="20"
-          width="300"
-          height="160"
-          rx="16"
-          fill="white"
-          stroke={highlight}
-          strokeWidth="4"
-        />
-        <text
-          x="1000"
-          y="60"
-          fill={lightText}
-          fontSize="28"
-          fontWeight="bold"
-          textAnchor="middle"
-          fontFamily="var(--osd-font-display)"
-        >
-          ArcFace
-        </text>
-        <rect x="940" y="80" width="120" height="90" fill="url(#marginGrad)" />
-        <line
-          x1="940"
-          y1="80"
-          x2="940"
-          y2="170"
-          stroke={highlight}
-          strokeWidth="3"
-        />
-        <line
-          x1="1060"
-          y1="80"
-          x2="1060"
-          y2="170"
-          stroke={warning}
-          strokeWidth="3"
-        />
-        <text x="890" y="140" fill={highlight} fontSize="36" fontWeight="bold">
-          A
-        </text>
-        <text x="1110" y="140" fill={warning} fontSize="36" fontWeight="bold">
-          B
-        </text>
-      </svg>
+    <div
+      className="animate-fade-up delay-500"
+      style={{
+        marginTop: 32,
+        padding: 24,
+        borderRadius: 12,
+        background: "rgba(255,255,255,0.03)",
+        border: "1px solid rgba(255,255,255,0.1)",
+      }}
+    >
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 32,
+        }}
+      >
+        <div style={{ textAlign: "center" }}>
+          <div
+            style={{
+              fontSize: 32,
+              fontWeight: 800,
+              color: highlight,
+              fontFamily: "var(--osd-font-display)",
+            }}
+          >
+            85–95%
+          </div>
+          <div style={{ fontSize: 20, color: "#94A3B8", marginTop: 4 }}>
+            Intra-Class Similarity (same person)
+          </div>
+        </div>
+        <div style={{ textAlign: "center" }}>
+          <div
+            style={{
+              fontSize: 32,
+              fontWeight: 800,
+              color: warning,
+              fontFamily: "var(--osd-font-display)",
+            }}
+          >
+            0–40%
+          </div>
+          <div style={{ fontSize: 20, color: "#94A3B8", marginTop: 4 }}>
+            Inter-Class Similarity (different people)
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 );
@@ -2433,52 +2387,19 @@ const Slide13Math: Page = () => (
         </li>
         <li>
           <strong style={{ color: highlight }}>
-            <MVar>m</MVar> = 0.5 rad :
+            <MVar>m</MVar>
+            {" = 0.3 rad :"}
           </strong>{" "}
           Additive angular margin (~28.6°).
         </li>
         <li>
           <strong>
-            <MVar>s</MVar> = 64 :
+            <MVar>s</MVar>
+            {" = 30 :"}
           </strong>{" "}
           Scale factor amplifies logits after L2 norm.
         </li>
       </ul>
-      <div
-        className="animate-fade-up delay-300"
-        style={{
-          background: "rgba(245, 158, 11, 0.1)",
-          borderLeft: `6px solid ${warning}`,
-          padding: 32,
-          borderRadius: "0 12px 12px 0",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-        }}
-      >
-        <div
-          style={{
-            fontSize: 28,
-            fontWeight: "bold",
-            color: warning,
-            marginBottom: 16,
-          }}
-        >
-          Numerical Stability Fix
-        </div>
-        <div
-          style={{
-            fontFamily: "monospace",
-            fontSize: 24,
-            color: "#E2E8F0",
-            lineHeight: 1.6,
-          }}
-        >
-          When <MVar>θ</MVar> + <MVar>m</MVar> {">"} π :<br />
-          cos(<MVar>θ</MVar> + <MVar>m</MVar>) ≈ cos(<MVar>θ</MVar>) − sin(π−
-          <MVar>m</MVar>)·<MVar>m</MVar>
-        </div>
-      </div>
     </div>
   </div>
 );
@@ -2486,7 +2407,7 @@ const Slide13Math: Page = () => (
 // --- ResNet slide removed as it doesn't match the report ---
 
 const Slide14Comparison: Page = () => (
-  <div style={{ ...fill, background: lightBg, padding: "80px 120px" }}>
+  <div style={{ ...fill, background: "var(--osd-bg)", padding: "80px 120px" }}>
     <MotionStyles />
     <h2
       className="animate-fade-up"
@@ -2494,82 +2415,202 @@ const Slide14Comparison: Page = () => (
         fontFamily: "var(--osd-font-display)",
         fontSize: 72,
         fontWeight: 800,
-        margin: "0 0 40px 0",
-        color: lightText,
+        margin: "0 0 48px 0",
+        color: "white",
       }}
     >
-      ArcFace vs Triplet Loss
+      ArcFace Loss vs Triplet Loss
     </h2>
-    <div
-      className="animate-fade-up delay-100"
-      style={{
-        flex: 1,
-        background: "white",
-        borderRadius: 16,
-        border: "1px solid #E2E8F0",
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <div style={{ display: "flex", gap: 48, flex: 1 }}>
       <div
+        className="animate-fade-up delay-200"
         style={{
-          display: "grid",
-          gridTemplateColumns: "1.2fr 1fr 1.2fr",
-          background: "#0F172A",
-          color: "white",
-          padding: "24px 32px",
-          fontWeight: "bold",
-          fontSize: 28,
+          flex: 1,
+          background: "rgba(255,255,255,0.03)",
+          border: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: 16,
+          padding: 32,
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <div>Aspect</div>
-        <div>Triplet Loss</div>
-        <div style={{ color: highlight }}>ArcFace</div>
+        <div
+          style={{
+            fontSize: 32,
+            fontFamily: "var(--osd-font-display)",
+            color: warning,
+            fontWeight: 700,
+            marginBottom: 24,
+          }}
+        >
+          Triplet Loss
+        </div>
+        <div
+          style={{
+            fontSize: 22,
+            color: "#94A3B8",
+            marginBottom: 24,
+            lineHeight: 1.5,
+            fontFamily: "monospace",
+          }}
+        >
+          d(same) + α {"<"} d(different)
+        </div>
+        <ul
+          style={{
+            listStyle: "none",
+            padding: 0,
+            margin: 0,
+            display: "flex",
+            flexDirection: "column",
+            gap: 16,
+          }}
+        >
+          <li
+            className="animate-fade-up delay-300"
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              padding: 20,
+              borderRadius: 10,
+              borderLeft: `4px solid ${danger}`,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 20,
+                fontWeight: 700,
+                color: "white",
+                marginBottom: 6,
+              }}
+            >
+              Local Comparisons
+            </div>
+            <div style={{ fontSize: 18, color: "#94A3B8", lineHeight: 1.5 }}>
+              Compares only images within the mini-batch, unaware of the broader
+              embedding space. Cannot leverage global structure.
+            </div>
+          </li>
+          <li
+            className="animate-fade-up delay-400"
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              padding: 20,
+              borderRadius: 10,
+              borderLeft: `4px solid ${danger}`,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 20,
+                fontWeight: 700,
+                color: "white",
+                marginBottom: 6,
+              }}
+            >
+              Increased Iteration Steps
+            </div>
+            <div style={{ fontSize: 18, color: "#94A3B8", lineHeight: 1.5 }}>
+              Generating many triplets slows training and creates a heavy
+              forward/backward pass, especially with large databases.
+            </div>
+          </li>
+          <li
+            className="animate-fade-up delay-500"
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              padding: 20,
+              borderRadius: 10,
+              borderLeft: `4px solid ${danger}`,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 20,
+                fontWeight: 700,
+                color: "white",
+                marginBottom: 6,
+              }}
+            >
+              Margin Tuning
+            </div>
+            <div style={{ fontSize: 18, color: "#94A3B8", lineHeight: 1.5 }}>
+              The margin threshold is critical to performance and non-trivial to
+              tune, requiring careful experimentation.
+            </div>
+          </li>
+        </ul>
       </div>
-      <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-        <CompRow
-          bg="white"
-          aspect="Paradigm"
-          triplet="Metric learning (triplets)"
-          arcface="Classification with margin"
-          delay="delay-200"
-        />
-        <CompRow
-          bg="#F8FAFC"
-          aspect="Loss stability"
-          triplet="Unstable (triplet mining)"
-          arcface="Very stable (cross-entropy)"
-          delay="delay-300"
-        />
-        <CompRow
-          bg="white"
-          aspect="Sample efficiency"
-          triplet="Poor (many easy triplets)"
-          arcface="Excellent (every sample used)"
-          delay="delay-400"
-        />
-        <CompRow
-          bg="#F8FAFC"
-          aspect="Margin type"
-          triplet="Euclidean (inconsistent)"
-          arcface="Angular (uniform, consistent)"
-          delay="delay-500"
-        />
-        <CompRow
-          bg="white"
-          aspect="Implementation"
-          triplet="Complex sampler & miner"
-          arcface="Simple cross-entropy + margin"
-          delay="delay-600"
-        />
-        <CompRow
-          bg="#F8FAFC"
-          aspect="LFW Accuracy"
-          triplet="99.63%"
-          arcface="99.83%"
-          delay="delay-700"
-        />
+      <div
+        className="animate-fade-up delay-200"
+        style={{
+          flex: 1,
+          background: "rgba(255,255,255,0.03)",
+          border: "1px solid rgba(255,255,255,0.1)",
+          borderRadius: 16,
+          padding: 32,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <div
+          style={{
+            fontSize: 32,
+            fontFamily: "var(--osd-font-display)",
+            color: highlight,
+            fontWeight: 700,
+            marginBottom: 24,
+          }}
+        >
+          ArcFace
+        </div>
+        <div
+          style={{
+            fontSize: 22,
+            color: "#94A3B8",
+            marginBottom: 32,
+            lineHeight: 1.5,
+            fontFamily: "monospace",
+          }}
+        >
+          ArcFace: Additive Angular Margin Loss — directly optimises the
+          geodesic distance on the embedding hypersphere
+        </div>
+        <ul
+          style={{
+            listStyle: "none",
+            padding: 0,
+            margin: 0,
+            display: "flex",
+            flexDirection: "column",
+            gap: 16,
+          }}
+        >
+          <li
+            className="animate-fade-up delay-400"
+            style={{
+              background: "rgba(13, 148, 136, 0.08)",
+              padding: 20,
+              borderRadius: 10,
+              borderLeft: `4px solid ${highlight}`,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 20,
+                fontWeight: 700,
+                color: "white",
+                marginBottom: 6,
+              }}
+            >
+              Stable Training Process
+            </div>
+            <div style={{ fontSize: 18, color: "#94A3B8", lineHeight: 1.5 }}>
+              Directly optimizes the geodesic distance margin, resulting in
+              smoother optimization and more consistent convergence. Eliminates
+              the need for complex triplet mining and margin tuning heuristics.
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -2601,8 +2642,7 @@ const Slide15Transfer: Page = () => (
     >
       Training from scratch requires millions of images and immense compute.
       Transfer learning leverages an <strong>InceptionResNetV1</strong> backbone
-      pretrained on VGGFace2 (3.3M faces) and adapts the model specifically for
-      ENIE's environment.
+      pretrained on VGGFace2 (3.3M faces).
     </p>
     <div
       style={{
@@ -2623,15 +2663,15 @@ const Slide15Transfer: Page = () => (
       />
       <OptionCard
         title="2. Pretrained As-Is"
-        req="Download weights"
-        res="Fails in specific lighting"
+        req="Nothing, ready to use"
+        res="Bad confidence scores."
         verdict="~ Acceptable"
         color={warning}
         delay="delay-300"
       />
       <OptionCard
         title="3. Fine-Tune"
-        req="6733 photos, 2 GPU hrs (Colab)"
+        req="2 GPU hrs (Colab)"
         res="Best specific accuracy"
         verdict="✓ Industry Standard"
         color={success}
@@ -2664,16 +2704,31 @@ const Slide16Results: Page = () => (
     </h2>
     <div
       style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(4, 1fr)",
-        gap: 32,
+        display: "flex",
+        gap: 16,
         marginBottom: 60,
       }}
     >
-      <StatCard val="10" label="Training Identities" delay="delay-100" />
+      <StatCard val="423" label="Training Identities" delay="delay-100" />
       <StatCard val="512" label="Embedding Dimensions" delay="delay-200" />
-      <StatCard val="1.0000" label="Perfect L2 Norm" delay="delay-300" />
-      <StatCard val="0.55" label="Cosine Threshold" delay="delay-400" />
+      <MetricCompare
+        metric="R@1"
+        softmax="0.9241"
+        arcface="0.9794"
+        delay="delay-300"
+      />
+      <MetricCompare
+        metric="R@5"
+        softmax="0.9772"
+        arcface="0.9902"
+        delay="delay-300"
+      />
+      <MetricCompare
+        metric="mAP"
+        softmax="0.9466"
+        arcface="0.9840"
+        delay="delay-300"
+      />
     </div>
     <div style={{ display: "flex", gap: 60, flex: 1 }}>
       <div
@@ -2700,218 +2755,145 @@ const Slide16Results: Page = () => (
         </div>
         <svg
           width="100%"
-          height="180"
-          viewBox="0 0 400 180"
+          height="280"
+          viewBox="0 0 500 190"
           style={{ overflow: "visible" }}
         >
           <line
-            x1="40"
-            y1="20"
-            x2="380"
-            y2="20"
+            x1="55"
+            y1="15"
+            x2="490"
+            y2="15"
             stroke="#334155"
             strokeWidth="1"
             strokeDasharray="4 4"
           />
           <line
-            x1="40"
-            y1="90"
-            x2="380"
-            y2="90"
+            x1="55"
+            y1="61.9"
+            x2="490"
+            y2="61.9"
             stroke="#334155"
             strokeWidth="1"
             strokeDasharray="4 4"
           />
           <line
-            x1="40"
-            y1="160"
-            x2="380"
-            y2="160"
+            x1="55"
+            y1="118.4"
+            x2="490"
+            y2="118.4"
             stroke="#334155"
             strokeWidth="1"
             strokeDasharray="4 4"
           />
           <line
-            x1="40"
-            y1="20"
-            x2="40"
-            y2="160"
+            x1="55"
+            y1="175"
+            x2="490"
+            y2="175"
+            stroke="#334155"
+            strokeWidth="1"
+            strokeDasharray="4 4"
+          />
+          <line
+            x1="55"
+            y1="15"
+            x2="55"
+            y2="175"
             stroke="#94A3B8"
             strokeWidth="2"
           />
           <line
-            x1="40"
-            y1="160"
-            x2="380"
-            y2="160"
+            x1="55"
+            y1="175"
+            x2="490"
+            y2="175"
             stroke="#94A3B8"
             strokeWidth="2"
           />
-          <text x="10" y="25" fill="#94A3B8" fontSize="14">
-            3.28
+          <text x="9" y="19" fill="#94A3B8" fontSize="12">
+            8
           </text>
-          <text x="10" y="165" fill="#94A3B8" fontSize="14">
-            2.89
+          <text x="9" y="65" fill="#94A3B8" fontSize="12">
+            4
+          </text>
+          <text x="9" y="121" fill="#94A3B8" fontSize="12">
+            1
+          </text>
+          <text x="9" y="179" fill="#94A3B8" fontSize="12">
+            0
           </text>
           <text
-            x="210"
-            y="180"
+            x="272"
+            y="188"
             fill="#94A3B8"
             fontSize="14"
             textAnchor="middle"
           >
-            20 Epochs
+            60 Epochs
+          </text>
+          <text
+            x="495"
+            y="15"
+            fill="white"
+            fontSize="12"
+            fontFamily="monospace"
+            textAnchor="start"
+          >
+            Train
+          </text>
+          <text
+            x="495"
+            y="30"
+            fill={warning}
+            fontSize="12"
+            fontFamily="monospace"
+            textAnchor="start"
+          >
+            Val
           </text>
           <path
-            d="M 40 20 Q 150 25 200 90 T 380 150"
+            d="M55.0 19.6 L62.4 80.2 L69.7 121.6 L77.1 144.2 L84.5 141.4 L91.9 154.8 L99.2 157.3 L106.6 148.6 L114.0 151.4 L121.4 148.5 L128.7 161.0 L136.1 160.7 L143.5 154.7 L150.8 151.4 L158.2 158.2 L165.6 164.0 L173.0 154.3 L180.3 160.5 L187.7 158.7 L195.1 152.8 L202.5 152.1 L209.8 158.3 L217.2 159.7 L224.6 169.0 L231.9 163.7 L239.3 166.1 L246.7 167.9 L254.1 162.0 L261.4 164.7 L268.8 164.4 L276.2 169.5 L283.6 158.0 L290.9 171.0 L298.3 168.1 L305.7 169.0 L313.1 157.7 L320.4 168.3 L327.8 165.4 L335.2 166.7 L342.5 171.4 L349.9 165.8 L357.3 166.6 L364.7 160.6 L372.0 173.4 L379.4 173.0 L386.8 167.2 L394.2 161.3 L401.5 164.4 L408.9 162.0 L416.3 170.7 L423.6 165.7 L431.0 171.5 L438.4 168.7 L445.8 161.4 L453.1 162.3 L460.5 173.7 L467.9 164.3 L475.3 173.2 L482.6 168.0 L490.0 173.2"
             fill="none"
-            stroke={highlight}
-            strokeWidth="4"
+            stroke="white"
+            strokeWidth="2.5"
             strokeLinecap="round"
-            className="animate-draw"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M55.0 59.4 L62.4 131.3 L69.7 149.1 L77.1 157.0 L84.5 159.9 L91.9 157.1 L99.2 156.3 L106.6 154.9 L114.0 156.1 L121.4 165.6 L128.7 161.1 L136.1 159.7 L143.5 157.3 L150.8 157.0 L158.2 159.6 L165.6 161.6 L173.0 162.6 L180.3 169.7 L187.7 171.1 L195.1 157.5 L202.5 160.9 L209.8 162.7 L217.2 152.0 L224.6 162.4 L231.9 161.2 L239.3 159.5 L246.7 170.3 L254.1 165.9 L261.4 160.3 L268.8 170.8 L276.2 167.2 L283.6 163.5 L290.9 157.2 L298.3 166.2 L305.7 168.2 L313.1 168.8 L320.4 170.9 L327.8 161.4 L335.2 159.3 L342.5 158.9 L349.9 167.0 L357.3 159.5 L364.7 169.1 L372.0 167.4 L379.4 156.4 L386.8 166.2 L394.2 170.4 L401.5 154.6 L408.9 159.0 L416.3 162.6 L423.6 158.2 L431.0 157.9 L438.4 158.4 L445.8 166.3 L453.1 166.1 L460.5 164.2 L467.9 161.9 L475.3 161.8 L482.6 167.1 L490.0 151.6"
+            fill="none"
+            stroke={warning}
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
-      </div>
-      <div
-        className="animate-fade-up delay-600"
-        style={{ flex: 1.5, display: "flex", flexDirection: "column", gap: 24 }}
-      >
-        <div
-          style={{
-            background: "rgba(255,255,255,0.03)",
-            padding: 24,
-            borderRadius: 12,
-            borderLeft: `6px solid ${success}`,
-          }}
-        >
-          <h4
-            style={{
-              fontFamily: "var(--osd-font-display)",
-              fontSize: 26,
-              color: "white",
-              margin: "0 0 12px 0",
-            }}
-          >
-            Real-time Latency: ~280ms
-          </h4>
-          <p
-            style={{
-              fontSize: 22,
-              color: "#94A3B8",
-              margin: 0,
-              lineHeight: 1.5,
-            }}
-          >
-            Detection (CPU): {"<"}100ms. Recognition (CPU): ~180ms. Yields 3-4
-            FPS suitable for gate check-ins.
-          </p>
-        </div>
-        <div
-          style={{
-            background: "rgba(255,255,255,0.03)",
-            padding: 24,
-            borderRadius: 12,
-            borderLeft: `6px solid ${warning}`,
-          }}
-        >
-          <h4
-            style={{
-              fontFamily: "var(--osd-font-display)",
-              fontSize: 26,
-              color: "white",
-              margin: "0 0 12px 0",
-            }}
-          >
-            Voting & CLAHE
-          </h4>
-          <p
-            style={{
-              fontSize: 22,
-              color: "#94A3B8",
-              margin: 0,
-              lineHeight: 1.5,
-            }}
-          >
-            75% agreement across 8 consecutive frames. CLAHE preprocessing
-            compensates for uneven factory lighting.
-          </p>
-        </div>
       </div>
     </div>
   </div>
 );
 
-// const Slide17Learnings: Page = () => (
-//   <div style={{ ...fill, background: lightBg, padding: "80px 120px" }}>
-//     <MotionStyles />
-//     <h2
-//       className="animate-fade-up"
-//       style={{
-//         fontFamily: "var(--osd-font-display)",
-//         fontSize: 80,
-//         fontWeight: 800,
-//         margin: "0 0 60px 0",
-//         color: lightText,
-//         textAlign: "center",
-//       }}
-//     >
-//       Key Learnings
-//     </h2>
-//     <div
-//       style={{
-//         display: "grid",
-//         gridTemplateColumns: "1fr 1fr",
-//         gap: 40,
-//         flex: 1,
-//       }}
-//     >
-//       <LearningCard
-//         delay="delay-100"
-//         title="Applied Deep Learning"
-//         icon="🧠"
-//         items={
-//           <>
-//             <li>Implemented a CVPR 2019 research paper from scratch.</li>
-//             <li>Transfer Learning on Colab T4 GPUs.</li>
-//           </>
-//         }
-//       />
-//       <LearningCard
-//         delay="delay-200"
-//         title="Software Engineering"
-//         icon="⚙️"
-//         items={
-//           <>
-//             <li>Full ML pipeline from dataset parsing to deployment.</li>
-//             <li>Python backend integration with scalable logic.</li>
-//           </>
-//         }
-//       />
-//       <LearningCard
-//         delay="delay-300"
-//         title="Industrial Reality"
-//         icon="🏭"
-//         items={
-//           <>
-//             <li>Adapted for real-world constraints (lighting, latency).</li>
-//             <li>Chasm between "prototypes" and "production".</li>
-//           </>
-//         }
-//       />
-//       <LearningCard
-//         delay="delay-400"
-//         title="Academic Research"
-//         icon="🔬"
-//         items={
-//           <>
-//             <li>Primary literature directly, not tutorials.</li>
-//             <li>Hypersphere math to PyTorch tensors.</li>
-//           </>
-//         }
-//       />
-//     </div>
-//   </div>
-// );
+const Slide17Learnings: Page = () => (
+  <div
+    className="flex h-screen justify-center items-center"
+    style={{ ...fill, background: "var(--osd-bg)", padding: "80px 120px" }}
+  >
+    <MotionStyles />
+
+    <h1
+      className="animate-fade-up text-8xl font-bold text-white mb-8"
+      style={{
+        fontSize: 128,
+        fontFamily: "var(--osd-font-display)",
+        color: highlight,
+      }}
+    >
+      {" "}
+      Project Showcase
+    </h1>
+  </div>
+);
 
 const Slide18ThankYou: Page = () => (
   <div
@@ -2960,7 +2942,7 @@ const Slide18ThankYou: Page = () => (
         fontFamily: "var(--osd-font-display)",
       }}
     >
-      ENIE — National Enterprise for Electronic Industries · 2025
+      {""}
     </div>
     <div
       className="animate-fade-in delay-500"
@@ -2990,10 +2972,10 @@ export default [
   Slide10Embeddings,
   Slide11Softmax,
   Slide12Geometry,
-  Slide13Math,
+  // Slide13Math,
   Slide14Comparison,
-  Slide15Transfer,
+  // Slide15Transfer,
   Slide16Results,
-  // Slide17Learnings,
+  Slide17Learnings,
   Slide18ThankYou,
 ] satisfies Page[];
